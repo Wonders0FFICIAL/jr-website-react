@@ -13,10 +13,7 @@ import './Home.css'
 
 export function Home() {
   const [accent, setAccent] = useState('#8b3dff')
-  usePageMeta(
-    null,
-    'JR. is a software company building tools for developers, businesses and everyday people. Join the waitlist.',
-  )
+  usePageMeta('/')
 
   return (
     <>

@@ -7,10 +7,7 @@ import { usePageMeta } from '../hooks/usePageMeta'
 import './Products.css'
 
 export function Products() {
-  usePageMeta(
-    'Products',
-    'Juno, Avery, Forge, Lapis and Moka: the five products JR. is building for developers, businesses and everyday people.',
-  )
+  usePageMeta('/products')
 
   return (
     <>

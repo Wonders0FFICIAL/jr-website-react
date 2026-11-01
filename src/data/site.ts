@@ -21,6 +21,8 @@ export const SOCIALS: Social[] = [
   { id: 'github', label: 'GitHub', href: 'https://github.com/jr-official', blurb: 'See what we are building' },
   { id: 'x', label: 'X', href: 'https://x.com/jr_suite', blurb: 'News and updates' },
   { id: 'youtube', label: 'YouTube', href: 'https://youtube.com/@junior.software', blurb: 'Watch our videos' },
+  { id: 'instagram', label: 'Instagram', href: 'https://www.instagram.com/junior.0fficial/', blurb: 'Behind the scenes and sneak peeks' },
+  { id: 'reddit', label: 'Reddit', href: 'https://www.reddit.com/r/jr_tech/', blurb: 'Talk with other early users' },
 ]
 
 export const DONATE = { label: 'Support JR.', href: 'https://ko-fi.com/jr_official' }

@@ -317,12 +317,12 @@ img { display: block; max-width: 100%; }
 .page-head .narrow h1 { max-width: none; }
 
 /* ---------- Scroll reveal ---------- */
-.reveal {
+.hydrated .reveal {
   opacity: 0;
   transform: translateY(18px);
   transition: opacity 0.6s ease var(--reveal-delay, 0ms), transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) var(--reveal-delay, 0ms);
 }
-.reveal.is-visible { opacity: 1; transform: none; }
+.hydrated .reveal.is-visible { opacity: 1; transform: none; }
 
 @media (max-width: 900px) {
   .audience-grid, .principles { grid-template-columns: 1fr; }
@@ -335,5 +335,5 @@ img { display: block; max-width: 100%; }
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
   }
-  .reveal { opacity: 1; transform: none; }
+  .hydrated .reveal { opacity: 1; transform: none; }
 }

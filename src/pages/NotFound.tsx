@@ -4,7 +4,7 @@ import { usePageMeta } from '../hooks/usePageMeta'
 import './Content.css'
 
 export function NotFound() {
-  usePageMeta('Page not found', 'This page does not exist.')
+  usePageMeta('not-found')
 
   return (
     <section className="notfound">

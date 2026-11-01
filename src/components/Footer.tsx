@@ -47,6 +47,7 @@ export function Footer() {
           <h2 className="footer__title">More</h2>
           <ul>
             <li><Link to="/privacy">Privacy</Link></li>
+            <li><Link to="/terms">Terms</Link></li>
             <li>
               <a href={DONATE.href} target="_blank" rel="noopener noreferrer">
                 {DONATE.label}

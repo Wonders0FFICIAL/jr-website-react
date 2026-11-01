@@ -95,3 +95,16 @@
   .price-row { flex-wrap: wrap; }
   .price-row .chip { margin-left: 66px; }
 }
+
+/* ---------- Legal pages ---------- */
+.legal-date { margin-top: 14px; font-size: 0.92rem; color: var(--dim); }
+.glance {
+  margin-bottom: 44px;
+  padding: 24px 26px;
+  border: 1px solid var(--brand-line);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(180deg, rgb(139 61 255 / 0.08), transparent), var(--surface);
+}
+.glance h2 { margin: 0 0 14px; font-size: 1.15rem; }
+.glance ul { margin-bottom: 0 !important; }
+.prose h2 { scroll-margin-top: 90px; }

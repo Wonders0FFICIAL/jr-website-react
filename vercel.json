@@ -3,14 +3,45 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "redirects": [
-    { "source": "/home", "destination": "/", "permanent": false },
-    { "source": "/signup", "destination": "/waitlist", "permanent": false },
-    { "source": "/login", "destination": "/waitlist", "permanent": false },
-    { "source": "/profile-setup", "destination": "/waitlist", "permanent": false },
-    { "source": "/blog", "destination": "/", "permanent": false },
-    { "source": "/community", "destination": "/contact", "permanent": false },
-    { "source": "/settings", "destination": "/", "permanent": false },
-    { "source": "/settings/:path*", "destination": "/", "permanent": false }
-  ],
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+    {
+      "source": "/home",
+      "destination": "/",
+      "permanent": false
+    },
+    {
+      "source": "/signup",
+      "destination": "/waitlist",
+      "permanent": false
+    },
+    {
+      "source": "/login",
+      "destination": "/waitlist",
+      "permanent": false
+    },
+    {
+      "source": "/profile-setup",
+      "destination": "/waitlist",
+      "permanent": false
+    },
+    {
+      "source": "/blog",
+      "destination": "/",
+      "permanent": false
+    },
+    {
+      "source": "/community",
+      "destination": "/contact",
+      "permanent": false
+    },
+    {
+      "source": "/settings",
+      "destination": "/",
+      "permanent": false
+    },
+    {
+      "source": "/settings/:path*",
+      "destination": "/",
+      "permanent": false
+    }
+  ]
 }
