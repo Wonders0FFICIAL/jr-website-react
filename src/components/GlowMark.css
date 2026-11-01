@@ -1,0 +1,17 @@
+.gmark { position: relative; width: var(--s); height: var(--s); margin-inline: auto; display: grid; place-items: center; }
+.gmark__halo { position: absolute; inset: -35%; background: radial-gradient(closest-side, var(--glow-strong), transparent 70%); opacity: 0.75; }
+.gmark__disc {
+  position: relative;
+  width: 74%;
+  height: 74%;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #191922, #0c0c12 70%);
+  border: 1px solid var(--brand-line-strong);
+  box-shadow: 0 0 40px var(--glow-strong), inset 0 0 22px rgb(139 61 255 / 0.25);
+}
+.gmark__disc img { width: 62%; height: 62%; object-fit: contain; }
+.gmark__pulse { position: absolute; width: 74%; height: 74%; border-radius: 50%; border: 1px solid var(--brand); animation: gmark-pulse 3.6s ease-out infinite; }
+@keyframes gmark-pulse { 0% { transform: scale(1); opacity: 0.7; } 100% { transform: scale(1.7); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .gmark__pulse { animation: none; opacity: 0; } }

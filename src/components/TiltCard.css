@@ -1,0 +1,25 @@
+.tilt {
+  position: relative;
+  display: block;
+  color: inherit;
+  text-decoration: none;
+  transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transition: transform 0.25s ease-out, border-color 0.25s ease;
+  transform-style: preserve-3d;
+}
+
+.tilt__glare {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(280px circle at var(--gx, 50%) var(--gy, 50%), color-mix(in srgb, var(--accent, #ffffff) 20%, transparent), transparent 70%);
+  transition: opacity 0.25s ease;
+}
+
+.tilt:hover .tilt__glare { opacity: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  .tilt { transform: none; }
+}
