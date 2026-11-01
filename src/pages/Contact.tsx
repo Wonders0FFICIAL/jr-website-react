@@ -5,7 +5,7 @@ import { usePageMeta } from '../hooks/usePageMeta'
 import './Content.css'
 
 export function Contact() {
-  usePageMeta('Contact', 'Get in touch with JR. by message, or find us on Discord, GitHub, X and YouTube.')
+  usePageMeta('/contact')
 
   return (
     <section className="page-head page-head--split">

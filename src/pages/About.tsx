@@ -8,7 +8,7 @@ import { usePageMeta } from '../hooks/usePageMeta'
 import './Content.css'
 
 export function About() {
-  usePageMeta('About', 'JR. is a software company that builds its own tools to make life better for developers, businesses and everyday people.')
+  usePageMeta('/about')
 
   return (
     <>

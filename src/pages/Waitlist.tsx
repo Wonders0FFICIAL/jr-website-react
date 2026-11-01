@@ -7,7 +7,7 @@ import { usePageMeta } from '../hooks/usePageMeta'
 import './Content.css'
 
 export function Waitlist() {
-  usePageMeta('Join the waitlist', 'Join the JR. waitlist and we will email you when our first products are ready.')
+  usePageMeta('/waitlist')
   const [params] = useSearchParams()
   const pre = params.get('interest')
   const initial = PRODUCTS.filter((p) => p.id === pre).map((p) => p.id) as Product['id'][]

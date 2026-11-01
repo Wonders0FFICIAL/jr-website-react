@@ -5,7 +5,7 @@ import { usePageMeta } from '../hooks/usePageMeta'
 import './Content.css'
 
 export function Pricing() {
-  usePageMeta('Pricing', 'Nothing from JR. is for sale yet. Pricing for each product will be published here at launch.')
+  usePageMeta('/pricing')
 
   return (
     <>
