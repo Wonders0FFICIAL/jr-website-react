@@ -1,5 +1,3 @@
-/* Shared by waitlist, contact, about, pricing, privacy and 404. */
-
 .split {
   display: grid;
   grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
@@ -21,7 +19,6 @@
 .expect li { padding-left: 18px; border-left: 2px solid var(--line-2); color: var(--muted); }
 .expect strong { display: block; margin-bottom: 2px; color: var(--text); }
 
-/* ---------- Pricing ---------- */
 .price-list { border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--surface); overflow: hidden; }
 .price-row { display: flex; align-items: center; gap: 18px; padding: 18px 24px; }
 .price-row + .price-row { border-top: 1px solid var(--line); }
@@ -46,7 +43,6 @@
 .note--stack p { font-weight: 400; color: var(--muted); }
 .social-links { display: flex; flex-wrap: wrap; gap: 10px; }
 
-/* ---------- Prose (about, privacy) ---------- */
 .prose h2 { margin: 44px 0 14px; font-size: 1.6rem; }
 .prose h2:first-child { margin-top: 0; }
 .prose p { margin-bottom: 14px; color: var(--muted); }
@@ -59,7 +55,6 @@
 .about-products li { display: flex; align-items: center; gap: 16px; color: var(--muted); }
 .about-products strong { color: var(--text); margin-right: 6px; }
 
-/* ---------- Contact channels ---------- */
 .aside-title { margin-bottom: 20px; font-size: 1.3rem; }
 .channels { display: grid; gap: 12px; margin-bottom: 12px; }
 .channel {
@@ -80,7 +75,6 @@
 .channel__arrow { color: var(--dim); }
 .channel--support { border-style: dashed; }
 
-/* ---------- 404 ---------- */
 .notfound { padding: clamp(56px, 10vw, 120px) 0; text-align: center; }
 .notfound .gmark { margin-bottom: 44px; }
 .notfound h1 { margin-bottom: 16px; font-size: clamp(2.2rem, 5vw, 3.6rem); }
@@ -95,16 +89,3 @@
   .price-row { flex-wrap: wrap; }
   .price-row .chip { margin-left: 66px; }
 }
-
-/* ---------- Legal pages ---------- */
-.legal-date { margin-top: 14px; font-size: 0.92rem; color: var(--dim); }
-.glance {
-  margin-bottom: 44px;
-  padding: 24px 26px;
-  border: 1px solid var(--brand-line);
-  border-radius: var(--radius-lg);
-  background: linear-gradient(180deg, rgb(139 61 255 / 0.08), transparent), var(--surface);
-}
-.glance h2 { margin: 0 0 14px; font-size: 1.15rem; }
-.glance ul { margin-bottom: 0 !important; }
-.prose h2 { scroll-margin-top: 90px; }

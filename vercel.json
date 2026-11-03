@@ -6,42 +6,42 @@
     {
       "source": "/home",
       "destination": "/",
-      "permanent": false
+      "permanent": true
     },
     {
       "source": "/signup",
       "destination": "/waitlist",
-      "permanent": false
+      "permanent": true
     },
     {
       "source": "/login",
       "destination": "/waitlist",
-      "permanent": false
+      "permanent": true
     },
     {
       "source": "/profile-setup",
       "destination": "/waitlist",
-      "permanent": false
+      "permanent": true
     },
     {
       "source": "/blog",
       "destination": "/",
-      "permanent": false
+      "permanent": true
     },
     {
       "source": "/community",
       "destination": "/contact",
-      "permanent": false
+      "permanent": true
     },
     {
       "source": "/settings",
       "destination": "/",
-      "permanent": false
+      "permanent": true
     },
     {
       "source": "/settings/:path*",
       "destination": "/",
-      "permanent": false
+      "permanent": true
     }
   ]
 }
