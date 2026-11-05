@@ -40,6 +40,14 @@ export const SEO = {
     title: 'Terms of use',
     description: 'The terms for using the JR. website and joining the waitlist.',
   },
+  '/nook/privacy': {
+    title: 'Nook privacy policy',
+    description: 'What the Nook Discord bot by JR. handles, why, and the control you have over it.',
+  },
+  '/nook/terms': {
+    title: 'Nook terms of service',
+    description: 'The rules for using the Nook Discord bot by JR.',
+  },
 } satisfies Record<string, SeoEntry>
 
 export type SeoPath = keyof typeof SEO
