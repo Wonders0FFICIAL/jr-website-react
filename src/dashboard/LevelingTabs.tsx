@@ -191,7 +191,7 @@ export function LadderPanel({ data, dirty, onApplied, toast }: { data: GuildSnap
       {done && <Notice>{done}</Notice>}
       <ul className="dz-ladder">
         {L.tiers.map((t) => (
-          <li key={t.level} style={{ ['--tc' as string]: t.color }}>
+          <li key={t.level} style={{ ['--role' as string]: t.color }}>
             <span className="dz-ladder__lvl">Lv {t.level}</span>
             <span className="dz-ladder__role"><i className="dz-dot" />{t.role}</span>
             <span className="dz-ladder__perk">{t.perk}</span>

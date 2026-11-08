@@ -63,7 +63,7 @@ export function DashboardHome() {
               {icon ? <img src={icon} alt="" width="56" height="56" /> : <span className="dz-guild__ph" aria-hidden="true">{g.name.slice(0, 1).toUpperCase()}</span>}
               <div className="dz-guild__body">
                 <h2>{g.name}</h2>
-                <p>{g.botIn ? <span className="dz-chip is-ok">Nook is here</span> : <span className="dz-chip">Not added</span>} {g.owner ? 'Owner' : 'Manager'}</p>
+                <p><span>{g.owner ? 'Owner' : 'Manager'}</span>{g.botIn ? <span className="dz-chip is-ok">Nook is here</span> : <span className="dz-chip">Not added</span>}</p>
               </div>
               {g.botIn ? (
                 <Link className="btn btn-primary btn-sm" to={`/nook/dashboard/${g.id}`}>Configure</Link>

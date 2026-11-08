@@ -9,7 +9,6 @@ export function DashboardRoot() {
   const { state, logout } = useSession()
   return (
     <div className="dz">
-      <div className="dz-aurora" aria-hidden="true" />
       <div className="container dz-bar">
         <Link to="/nook/dashboard" className="dz-brand">
           <span className="dz-brand__mark" aria-hidden="true" />

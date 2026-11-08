@@ -74,9 +74,9 @@ export function DashboardGuild() {
                 <h2>Leveling</h2>
                 <p>XP, ranks, leaderboards and role rewards.</p>
                 <dl className="dz-stats">
-                  <div><dt>XP per message</dt><dd>{l.xpMin}–{l.xpMax}</dd></div>
-                  <div><dt>Role rewards</dt><dd>{l.rewards.length}</dd></div>
-                  <div><dt>Ranked members</dt><dd>{fmt(data.ranked)}</dd></div>
+                  <div><dt>XP / msg</dt><dd>{l.xpMin}–{l.xpMax}</dd></div>
+                  <div><dt>Rewards</dt><dd>{l.rewards.length}</dd></div>
+                  <div><dt>Ranked</dt><dd>{fmt(data.ranked)}</dd></div>
                 </dl>
                 <Link className="btn btn-primary btn-sm dz-btn-ico" to={`/nook/dashboard/${data.guild.id}/leveling`}>Open leveling<Ico name="arrowRight" size={16} /></Link>
               </li>
