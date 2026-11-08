@@ -3,6 +3,8 @@ import { api, guildIcon } from './api'
 import { useGuild } from './useGuild'
 import { Notice, Spinner } from './ui'
 import { fmt } from './levelMath'
+import { Ico, Tile } from './Icons'
+import type { IconName, Tone } from './Icons'
 import { usePageMeta } from '../hooks/usePageMeta'
 
 export function GuildGate({ children }: { children: (data: import('./types').GuildSnapshot, h: ReturnType<typeof useGuild>) => React.ReactNode }) {
@@ -31,23 +33,23 @@ export function GuildGate({ children }: { children: (data: import('./types').Gui
             : guild.httpStatus === 403 ? 'You need the Manage Server permission in that server.'
             : guild.message}
         </Notice>
-        <p className="dz-back"><Link to="/nook/dashboard" className="text-link">← All servers</Link>{guild.httpStatus !== 403 && guild.code !== 'bot_not_in_guild' && <> · <button type="button" className="dz-linkbtn" onClick={h.reload}>Try again</button></>}</p>
+        <p className="dz-back"><Link to="/nook/dashboard" className="text-link"><Ico name="arrowLeft" size={15} /> All servers</Link>{guild.httpStatus !== 403 && guild.code !== 'bot_not_in_guild' && <> · <button type="button" className="dz-linkbtn" onClick={h.reload}>Try again</button></>}</p>
       </div>
     )
   }
   return <>{children(guild.data, h)}</>
 }
 
-export function GuildHeader({ data, current }: { data: import('./types').GuildSnapshot; current?: string }) {
+export function GuildHeader({ data, current, tone = 'violet' }: { data: import('./types').GuildSnapshot; current?: string; tone?: Tone }) {
   const icon = guildIcon(data.guild.id, data.guild.icon)
   return (
-    <header className="dz-ghead">
-      <p className="dz-back"><Link to="/nook/dashboard" className="text-link">← All servers</Link></p>
+    <header className={`dz-ghead tone-${tone}`}>
+      <p className="dz-back"><Link to="/nook/dashboard" className="text-link"><Ico name="arrowLeft" size={15} /> All servers</Link></p>
       <div className="dz-ghead__row">
         {icon ? <img src={icon} alt="" width="64" height="64" /> : <span className="dz-guild__ph dz-guild__ph--lg" aria-hidden="true">{data.guild.name.slice(0, 1).toUpperCase()}</span>}
         <div>
-          <h1>{data.guild.name}{current && <small> / {current}</small>}</h1>
-          <p className="dz-muted">{fmt(data.guild.memberCount)} members</p>
+          <h1>{data.guild.name}{current && <small><Ico name="arrowRight" size={16} />{current}</small>}</h1>
+          <p className="dz-muted"><Ico name="users" size={15} /> {fmt(data.guild.memberCount)} members</p>
         </div>
       </div>
     </header>
@@ -64,9 +66,9 @@ export function DashboardGuild() {
           <div className="container dz-main">
             <GuildHeader data={data} />
             <ul className="dz-modules">
-              <li className="dz-module">
+              <li className="dz-module tone-pink">
                 <div className="dz-module__top">
-                  <span className="dz-module__icon" aria-hidden="true">⭐</span>
+                  <Tile name="star" tone="pink" size={46} />
                   <span className={`dz-badge ${l.enabled ? 'is-on' : ''}`}>{l.enabled ? 'On' : 'Off'}</span>
                 </div>
                 <h2>Leveling</h2>
@@ -76,13 +78,13 @@ export function DashboardGuild() {
                   <div><dt>Role rewards</dt><dd>{l.rewards.length}</dd></div>
                   <div><dt>Ranked members</dt><dd>{fmt(data.ranked)}</dd></div>
                 </dl>
-                <Link className="btn btn-primary btn-sm" to={`/nook/dashboard/${data.guild.id}/leveling`}>Open leveling</Link>
+                <Link className="btn btn-primary btn-sm dz-btn-ico" to={`/nook/dashboard/${data.guild.id}/leveling`}>Open leveling<Ico name="arrowRight" size={16} /></Link>
               </li>
-              {['Welcome & auto-role', 'Logging', 'Auto-moderation'].map((m) => (
-                <li key={m} className="dz-module is-soon">
-                  <div className="dz-module__top"><span className="dz-module__icon" aria-hidden="true">🔒</span><span className="dz-badge">Soon</span></div>
+              {([['Welcome & auto-role', 'door', 'cyan', 'Greet new members and give them roles.'], ['Logging', 'clock', 'amber', 'See joins, edits and deletes in one place.'], ['Auto-moderation', 'shield', 'green', 'Filter spam, links and bad words.']] as [string, IconName, Tone, string][]).map(([m, ic, tn, d]) => (
+                <li key={m} className={`dz-module is-soon tone-${tn}`}>
+                  <div className="dz-module__top"><Tile name={ic} tone={tn} size={46} /><span className="dz-badge"><Ico name="lock" size={12} /> Soon</span></div>
                   <h2>{m}</h2>
-                  <p>Coming to Nook later.</p>
+                  <p>{d}</p>
                 </li>
               ))}
             </ul>

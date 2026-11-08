@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { ApiError, api } from './api'
 import { GuildGate, GuildHeader } from './DashboardGuild'
 import { AnnounceTab, GeneralTab, IgnoredTab, LeaderboardTab, MembersTab, RewardsTab, TabBar } from './LevelingTabs'
+import { Ico } from './Icons'
 import { Notice, Toasts, useToasts } from './ui'
 import { usePageMeta } from '../hooks/usePageMeta'
 import type { GuildSnapshot, LevelingConfig } from './types'
@@ -47,12 +48,12 @@ function Editor({ data, setSnapshot }: { data: GuildSnapshot; setSnapshot: (d: G
 
   const dirtyIn = (ks: (keyof LevelingConfig)[]) => ks.some((k) => keys.includes(k))
   const tabs = [
-    { id: 'general' as const, label: 'General', icon: '⚙️', dirty: dirtyIn(['enabled', 'xpMin', 'xpMax', 'cooldownSec', 'progression']) },
-    { id: 'announce' as const, label: 'Announcements', icon: '📣', dirty: dirtyIn(['announce']) },
-    { id: 'ignored' as const, label: 'Ignored', icon: '🚫', dirty: dirtyIn(['ignoredChannels', 'ignoredRoles']) },
-    { id: 'rewards' as const, label: 'Rewards', icon: '🏅', dirty: dirtyIn(['rewards', 'rewardMode']) },
-    { id: 'leaderboard' as const, label: 'Leaderboard', icon: '🏆' },
-    { id: 'members' as const, label: 'Members', icon: '🛠️' },
+    { id: 'general' as const, label: 'General', tone: 'violet' as const, icon: <Ico name="sliders" size={18} />, dirty: dirtyIn(['enabled', 'xpMin', 'xpMax', 'cooldownSec', 'progression']) },
+    { id: 'announce' as const, label: 'Announcements', tone: 'pink' as const, icon: <Ico name="megaphone" size={18} />, dirty: dirtyIn(['announce']) },
+    { id: 'ignored' as const, label: 'Ignored', tone: 'rose' as const, icon: <Ico name="ban" size={18} />, dirty: dirtyIn(['ignoredChannels', 'ignoredRoles']) },
+    { id: 'rewards' as const, label: 'Rewards', tone: 'amber' as const, icon: <Ico name="award" size={18} />, dirty: dirtyIn(['rewards', 'rewardMode']) },
+    { id: 'leaderboard' as const, label: 'Leaderboard', tone: 'cyan' as const, icon: <Ico name="trophy" size={18} /> },
+    { id: 'members' as const, label: 'Members', tone: 'green' as const, icon: <Ico name="users" size={18} /> },
   ]
 
   const save = async () => {
@@ -75,13 +76,13 @@ function Editor({ data, setSnapshot }: { data: GuildSnapshot; setSnapshot: (d: G
 
   return (
     <div className="container dz-main">
-      <GuildHeader data={data} current="Leveling" />
+      <GuildHeader data={data} current="Leveling" tone="pink" />
       <TabBar tabs={tabs} value={tab} onChange={setTab} />
       <div className="dz-content" role="tabpanel" id={`panel-${tab}`} aria-labelledby={`tab-${tab}`}>
         {tab === 'general' && <GeneralTab {...shared} />}
         {tab === 'announce' && <AnnounceTab {...shared} />}
         {tab === 'ignored' && <IgnoredTab {...shared} />}
-        {tab === 'rewards' && <RewardsTab {...shared} savedRoleIds={savedRoleIds} />}
+        {tab === 'rewards' && <RewardsTab {...shared} savedRoleIds={savedRoleIds} dirty={dirty} toast={toast} onApplied={(s) => { setSnapshot(s); setDraft(s.leveling) }} />}
         {tab === 'leaderboard' && <LeaderboardTab guildId={data.guild.id} onAdjust={(id) => { setAdjustId(id); setTab('members') }} />}
         {tab === 'members' && <MembersTab guildId={data.guild.id} limits={data.limits} initialId={adjustId} toast={toast} />}
       </div>
@@ -92,7 +93,7 @@ function Editor({ data, setSnapshot }: { data: GuildSnapshot; setSnapshot: (d: G
             <span>{errs.length ? <Notice kind="err">{errs[0]}</Notice> : formError ? <Notice kind="err">{formError}</Notice> : 'You have unsaved changes.'}</span>
             <div>
               <button type="button" className="btn btn-ghost btn-sm" onClick={() => { setDraft(saved); setFormError(null) }} disabled={saving}>Discard</button>
-              <button type="button" className="btn btn-primary btn-sm" onClick={save} disabled={saving || errs.length > 0}>{saving ? 'Saving…' : 'Save changes'}</button>
+              <button type="button" className="btn btn-primary btn-sm dz-btn-ico" onClick={save} disabled={saving || errs.length > 0}><Ico name="check" size={16} />{saving ? 'Saving…' : 'Save changes'}</button>
             </div>
           </div>
         </div>

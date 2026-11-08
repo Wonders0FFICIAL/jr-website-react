@@ -17,6 +17,9 @@ export type LevelingConfig = {
 
 export type ChannelInfo = { id: string; name: string; kind: 'text' | 'voice' | 'forum'; canSend: boolean }
 export type RoleInfo = { id: string; name: string; color: string | null; problem: string | null }
+export type LadderTier = { level: number; role: string; color: string; perk: string }
+export type Ladder = { titles: string[]; tiers: LadderTier[] }
+export type LadderResult = { created: string[]; matched: string[]; skipped: { name: string; reason: string }[]; added: number; leveling: LevelingConfig }
 export type Preset = { id: string; label: string; a: number; b: number; c: number }
 export type Limits = {
   MAX_LEVEL: number
@@ -35,6 +38,7 @@ export type GuildSnapshot = {
   roles: RoleInfo[]
   leveling: LevelingConfig
   limits: Limits
+  ladder: Ladder
   presets: Preset[]
   ranked: number
 }

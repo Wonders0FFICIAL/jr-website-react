@@ -1,4 +1,4 @@
-import type { GuildSnapshot, Leaderboard, LevelingConfig, MemberInfo, Me, Period, XpResult } from './types'
+import type { GuildSnapshot, Leaderboard, LadderResult, LevelingConfig, MemberInfo, Me, Period, XpResult } from './types'
 
 /** Public URL of the bot's dashboard API (set VITE_NOOK_API_URL in Vercel). No trailing slash. */
 export const API_URL: string = ((import.meta.env.VITE_NOOK_API_URL as string | undefined) ?? '').replace(/\/+$/, '')
@@ -68,6 +68,7 @@ export const api = {
   leaderboard: (id: string, period: Period, page: number) =>
     request<Leaderboard>('GET', `${g(id)}/leveling/leaderboard?period=${period}&page=${page}`),
   member: (id: string, userId: string) => request<MemberInfo>('GET', `${g(id)}/leveling/members/${encodeURIComponent(userId)}`),
+  applyLadder: (id: string) => request<LadderResult>('POST', `${g(id)}/leveling/ladder`, {}),
   adjustXp: (id: string, body: { userId: string; mode: 'add' | 'remove' | 'set' | 'reset'; amount?: number }) =>
     request<XpResult>('POST', `${g(id)}/leveling/xp`, body),
 }

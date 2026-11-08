@@ -1,5 +1,7 @@
 import { useEffect, useId, useMemo, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
+import { Ico, Tile } from './Icons'
+import type { IconName, Tone } from './Icons'
 
 /* ---------- Toggle ---------- */
 export function Toggle({ checked, onChange, label, hint }: { checked: boolean; onChange: (v: boolean) => void; label: string; hint?: string }) {
@@ -70,7 +72,7 @@ export function MultiPicker({ title, items, value, onChange, max, empty }: { tit
         <h3>{title}</h3>
         <span className="dz-count">{value.length}/{max}</span>
       </div>
-      <input className="dz-search" type="search" placeholder="Search…" value={q} onChange={(e) => setQ(e.target.value)} aria-label={`Search ${title.toLowerCase()}`} />
+      <div className="dz-searchbox"><Ico name="search" size={16} /><input className="dz-search" type="search" placeholder="Search…" value={q} onChange={(e) => setQ(e.target.value)} aria-label={`Search ${title.toLowerCase()}`} /></div>
       <ul className="dz-picker__list">
         {shown.map((i) => (
           <li key={i.id}>
@@ -103,7 +105,7 @@ export function useToasts() {
 export function Toasts({ toasts }: { toasts: Toast[] }) {
   return (
     <div className="dz-toasts" role="status" aria-live="polite">
-      {toasts.map((t) => <div key={t.id} className={`dz-toast is-${t.kind}`}>{t.text}</div>)}
+      {toasts.map((t) => <div key={t.id} className={`dz-toast is-${t.kind}`}><Ico name={t.kind === 'ok' ? 'check' : 'alert'} size={18} />{t.text}</div>)}
     </div>
   )
 }
@@ -113,15 +115,16 @@ export const Spinner = ({ label = 'Loading' }: { label?: string }) => (
   <div className="dz-center" role="status"><span className="dz-spinner" aria-hidden="true" /><span className="sr-only">{label}</span></div>
 )
 
-export function Panel({ title, children, aside }: { title?: string; children: ReactNode; aside?: ReactNode }) {
+export function Panel({ title, children, aside, icon, tone = 'violet' }: { title?: string; children: ReactNode; aside?: ReactNode; icon?: IconName; tone?: Tone }) {
   return (
-    <section className="dz-panel">
-      {(title || aside) && <header className="dz-panel__head">{title && <h2>{title}</h2>}{aside}</header>}
+    <section className={`dz-panel tone-${tone}`}>
+      {(title || aside) && <header className="dz-panel__head">{title && <h2>{icon && <Tile name={icon} tone={tone} size={30} />}{title}</h2>}{aside}</header>}
       {children}
     </section>
   )
 }
 
 export function Notice({ kind = 'info', children }: { kind?: 'info' | 'warn' | 'err'; children: ReactNode }) {
-  return <div className={`dz-notice is-${kind}`} role={kind === 'err' ? 'alert' : undefined}>{children}</div>
+  const icon: IconName = kind === 'info' ? 'info' : 'alert'
+  return <div className={`dz-notice is-${kind}`} role={kind === 'err' ? 'alert' : undefined}><Ico name={icon} size={18} /><div>{children}</div></div>
 }

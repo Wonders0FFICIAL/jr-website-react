@@ -1,9 +1,13 @@
 import { useEffect, useMemo, useState } from 'react'
 import type { ReactNode } from 'react'
+import { Ico } from './Icons'
+import type { Tone } from './Icons'
 import { ApiError, api } from './api'
 import { duration, fmt, formula, totalXpForLevel, xpToNext } from './levelMath'
 import { MultiPicker, NumberField, Notice, Panel, Segmented, Spinner, Toggle } from './ui'
 import type { GuildSnapshot, Leaderboard, LevelingConfig, MemberInfo, Period, Progression } from './types'
+
+const titleFor = (lvl: number, titles?: string[]) => (lvl <= 0 ? 'Newcomer' : (titles ?? [])[Math.min(lvl, (titles ?? []).length) - 1] ?? 'Newcomer')
 
 type DraftProps = { data: GuildSnapshot; draft: LevelingConfig; set: (patch: Partial<LevelingConfig>) => void }
 
@@ -43,7 +47,7 @@ export function GeneralTab({ data, draft, set }: DraftProps) {
         <Toggle checked={draft.enabled} onChange={(enabled) => set({ enabled })} label="Leveling enabled" hint="When off, members earn no XP and the leveling commands are paused. Progress is kept." />
       </Panel>
 
-      <Panel title="XP per message">
+      <Panel title="XP per message" icon="sparkles" tone="amber">
         <div className="dz-grid3">
           <NumberField label="Minimum" value={draft.xpMin} onChange={(xpMin) => set({ xpMin })} min={0} max={L.MAX_XP_PER_MESSAGE} invalid={draft.xpMin > draft.xpMax} />
           <NumberField label="Maximum" value={draft.xpMax} onChange={(xpMax) => set({ xpMax })} min={1} max={L.MAX_XP_PER_MESSAGE} invalid={draft.xpMax < 1 || draft.xpMin > draft.xpMax} />
@@ -52,7 +56,7 @@ export function GeneralTab({ data, draft, set }: DraftProps) {
         {draft.xpMin > draft.xpMax && <Notice kind="err">The minimum can’t be higher than the maximum.</Notice>}
       </Panel>
 
-      <Panel title="Level progression">
+      <Panel title="Level progression" icon="bars" tone="cyan">
         <p className="dz-hint">XP needed to go from level <em>n</em> to <em>n</em>+1 is <code>{formula(p)}</code>.</p>
         <div className="dz-presets" role="radiogroup" aria-label="Progression preset">
           {data.presets.map((x) => (
@@ -89,7 +93,7 @@ export function GeneralTab({ data, draft, set }: DraftProps) {
 }
 
 /* =========================== Announcements =========================== */
-const TOKENS = ['{user}', '{username}', '{level}', '{xp}', '{server}']
+const TOKENS = ['{user}', '{username}', '{level}', '{title}', '{xp}', '{server}']
 
 export function AnnounceTab({ data, draft, set }: DraftProps) {
   const a = draft.announce
@@ -100,6 +104,7 @@ export function AnnounceTab({ data, draft, set }: DraftProps) {
     .replace(/\{user\}/gi, '\u0000u')
     .replace(/\{username\}/gi, 'Wonders')
     .replace(/\{level\}/gi, '7')
+    .replace(/\{title\}/gi, titleFor(7, data.ladder?.titles))
     .replace(/\{xp\}/gi, fmt(totalXpForLevel(7, draft.progression)))
     .replace(/\{server\}/gi, data.guild.name)
   const parts = preview.split('\u0000u')
@@ -108,7 +113,7 @@ export function AnnounceTab({ data, draft, set }: DraftProps) {
       <Panel>
         <Toggle checked={a.enabled} onChange={(enabled) => setA({ enabled })} label="Level-up announcements" hint="Off means no level-up or reward messages at all. Roles are still given." />
       </Panel>
-      <Panel title="Where to announce">
+      <Panel title="Where to announce" icon="hash" tone="pink">
         <div className="dz-field">
           <label htmlFor="dz-ann-ch">Channel</label>
           <select id="dz-ann-ch" className="dz-select" value={a.channelId ?? ''} onChange={(e) => setA({ channelId: e.target.value || null })}>
@@ -119,7 +124,7 @@ export function AnnounceTab({ data, draft, set }: DraftProps) {
         {chosen && !chosen.canSend && <Notice kind="warn">Nook can’t send messages in #{chosen.name}. Give it <strong>View Channel</strong> and <strong>Send Messages</strong> there, otherwise it falls back to the channel the member was chatting in.</Notice>}
         {a.channelId && !chosen && <Notice kind="warn">The saved channel no longer exists. Pick another one.</Notice>}
       </Panel>
-      <Panel title="Message">
+      <Panel title="Message" icon="megaphone" tone="violet">
         <div className="dz-field">
           <label htmlFor="dz-ann-msg">Text</label>
           <textarea id="dz-ann-msg" className="dz-textarea" rows={3} maxLength={data.limits.MAX_MESSAGE_LENGTH} value={a.message} onChange={(e) => setA({ message: e.target.value })} aria-invalid={!a.message.trim() || undefined} />
@@ -145,7 +150,7 @@ export function AnnounceTab({ data, draft, set }: DraftProps) {
 
 /* =========================== Ignored =========================== */
 export function IgnoredTab({ data, draft, set }: DraftProps) {
-  const channels = data.channels.map((c) => ({ id: c.id, label: `${c.kind === 'voice' ? '🔊 ' : c.kind === 'forum' ? '💬 ' : '# '}${c.name}` }))
+  const channels = data.channels.map((c) => ({ id: c.id, label: `${c.kind === 'text' ? '# ' : ''}${c.name}`, sub: c.kind === 'voice' ? 'voice' : c.kind === 'forum' ? 'forum' : undefined }))
   const roles = data.roles.map((r) => ({ id: r.id, label: r.name, color: r.color }))
   return (
     <>
@@ -159,7 +164,53 @@ export function IgnoredTab({ data, draft, set }: DraftProps) {
 }
 
 /* =========================== Rewards =========================== */
-export function RewardsTab({ data, draft, set, savedRoleIds }: DraftProps & { savedRoleIds: Set<string> }) {
+export function LadderPanel({ data, dirty, onApplied, toast }: { data: GuildSnapshot; dirty: boolean; onApplied: (s: GuildSnapshot) => void; toast: { ok: (t: string) => void; err: (t: string) => void } }) {
+  const [busy, setBusy] = useState(false)
+  const [open, setOpen] = useState(false)
+  const [done, setDone] = useState<string | null>(null)
+  const L = data.ladder
+  if (!L?.tiers?.length) return null
+  const have = new Set(data.roles.map((r) => r.name.toLowerCase()))
+  const room = data.limits.MAX_REWARDS - data.leveling.rewards.length
+  const apply = async () => {
+    setBusy(true); setDone(null)
+    try {
+      const r = await api.applyLadder(data.guild.id)
+      const fresh = await api.guild(data.guild.id)
+      onApplied(fresh)
+      const msg = `Added ${r.added} reward${r.added === 1 ? '' : 's'}: ${r.created.length} new role${r.created.length === 1 ? '' : 's'} created, ${r.matched.length} existing matched${r.skipped.length ? `, ${r.skipped.length} skipped (${r.skipped.map((x) => `${x.name}: ${x.reason}`).join('; ')})` : ''}.`
+      setDone(msg); toast.ok(`Rank ladder applied (${r.added} rewards).`)
+    } catch (e) {
+      toast.err(e instanceof ApiError ? e.message : 'Could not apply the ladder.')
+    } finally { setBusy(false) }
+  }
+  return (
+    <Panel title="Rank ladder" icon="gift" tone="amber" aside={<button type="button" className="btn btn-primary btn-sm dz-btn-ico" onClick={apply} disabled={busy || dirty || room < 1}><Ico name="wand" size={16} />{busy ? 'Applying…' : 'Apply ladder'}</button>}>
+      <p className="dz-hint dz-hint--top">One click sets up {L.tiers.length} milestone roles (New Leaf, Tea Sipper, Night Owl and more). Nook creates any role that doesn’t exist yet, or reuses one with the same name, then adds a reward at each level. Your existing rewards stay. Nook needs <strong>Manage Roles</strong>.</p>
+      {dirty && <Notice kind="warn">Save or discard your pending changes first, then apply the ladder.</Notice>}
+      {done && <Notice>{done}</Notice>}
+      <ul className="dz-ladder">
+        {L.tiers.map((t) => (
+          <li key={t.level} style={{ ['--tc' as string]: t.color }}>
+            <span className="dz-ladder__lvl">Lv {t.level}</span>
+            <span className="dz-ladder__role"><i className="dz-dot" />{t.role}</span>
+            <span className="dz-ladder__perk">{t.perk}</span>
+            {have.has(t.role.toLowerCase()) && <span className="dz-chip">role exists</span>}
+          </li>
+        ))}
+      </ul>
+      <button type="button" className="dz-linkbtn" onClick={() => setOpen(!open)} aria-expanded={open}>{open ? 'Hide' : 'Show'} all {L.titles.length} level titles</button>
+      {open && (
+        <ol className="dz-titles">
+          {L.titles.map((t, i) => <li key={t}><b>{i + 1}</b>{t}</li>)}
+        </ol>
+      )}
+      <p className="dz-hint">These titles also work in announcements: write <code>{'{title}'}</code> and it becomes the member’s title for their new level.</p>
+    </Panel>
+  )
+}
+
+export function RewardsTab({ data, draft, set, savedRoleIds, dirty, onApplied, toast }: DraftProps & { savedRoleIds: Set<string>; dirty: boolean; onApplied: (s: GuildSnapshot) => void; toast: { ok: (t: string) => void; err: (t: string) => void } }) {
   const L = data.limits
   const rewards = draft.rewards
   const used = new Set(rewards.map((r) => r.roleId))
@@ -173,11 +224,12 @@ export function RewardsTab({ data, draft, set, savedRoleIds }: DraftProps & { sa
   }
   return (
     <>
-      <Panel title="When a member unlocks a new reward">
+      <LadderPanel data={data} dirty={dirty} onApplied={onApplied} toast={toast} />
+      <Panel title="When a member unlocks a new reward" icon="layers" tone="green">
         <Segmented<'stack' | 'replace'> label="Reward mode" value={draft.rewardMode} onChange={(rewardMode) => set({ rewardMode })} options={[{ value: 'stack', label: 'Stack: keep every role' }, { value: 'replace', label: 'Replace: keep only the newest' }]} />
         <p className="dz-hint">{draft.rewardMode === 'stack' ? 'Members keep all the reward roles they have unlocked.' : 'Each new milestone role replaces the previous reward role.'}</p>
       </Panel>
-      <Panel title={`Role rewards (${rewards.length}/${L.MAX_REWARDS})`} aside={<button type="button" className="btn btn-primary btn-sm" onClick={add} disabled={!free || rewards.length >= L.MAX_REWARDS}>Add reward</button>}>
+      <Panel icon="award" tone="pink" title={`Role rewards (${rewards.length}/${L.MAX_REWARDS})`} aside={<button type="button" className="btn btn-primary btn-sm dz-btn-ico" onClick={add} disabled={!free || rewards.length >= L.MAX_REWARDS}><Ico name="plus" size={16} />Add reward</button>}>
         {!free && rewards.length < L.MAX_REWARDS && <Notice kind="warn">No roles are available. Nook can only hand out roles that sit <strong>below its own highest role</strong> and aren’t managed by an integration. Move Nook’s role up in Server Settings → Roles.</Notice>}
         {!rewards.length ? <p className="dz-empty-big">No rewards yet. Add one to give a role at a level.</p> : (
           <ul className="dz-rewards">
@@ -199,9 +251,9 @@ export function RewardsTab({ data, draft, set, savedRoleIds }: DraftProps & { sa
                       })}
                     </select>
                     {dupe && <p className="dz-err">This role is already used by another reward.</p>}
-                    {problem && <p className="dz-warn">⚠ Nook can’t give this role right now: {problem}.</p>}
+                    {problem && <p className="dz-warn"><Ico name="alert" size={15} /> Nook can’t give this role right now: {problem}.</p>}
                   </div>
-                  <button type="button" className="btn btn-ghost btn-sm" onClick={() => set({ rewards: rewards.filter((_, k) => k !== i) })} aria-label={`Remove reward for level ${r.level}`}>Remove</button>
+                  <button type="button" className="btn btn-ghost btn-sm" onClick={() => set({ rewards: rewards.filter((_, k) => k !== i) })} aria-label={`Remove reward for level ${r.level}`}><Ico name="trash" size={15} />Remove</button>
                 </li>
               )
             })}
@@ -227,7 +279,7 @@ export function LeaderboardTab({ guildId, onAdjust }: { guildId: string; onAdjus
   }, [guildId, period, page])
   const pages = lb ? Math.max(1, Math.ceil(lb.total / lb.pageSize)) : 1
   return (
-    <Panel title="Leaderboard" aside={<Segmented<Period> label="Period" value={period} onChange={(p) => { setPeriod(p); setPage(0); setLb(null) }} options={[{ value: 'alltime', label: 'All-time' }, { value: 'weekly', label: 'Weekly' }, { value: 'monthly', label: 'Monthly' }]} />}>
+    <Panel title="Leaderboard" icon="trophy" tone="amber" aside={<Segmented<Period> label="Period" value={period} onChange={(p) => { setPeriod(p); setPage(0); setLb(null) }} options={[{ value: 'alltime', label: 'All-time' }, { value: 'weekly', label: 'Weekly' }, { value: 'monthly', label: 'Monthly' }]} />}>
       {err && <Notice kind="err">{err}</Notice>}
       {!lb && !err && <Spinner />}
       {lb && (
@@ -250,9 +302,9 @@ export function LeaderboardTab({ guildId, onAdjust }: { guildId: string; onAdjus
             </table>
           </div>
           <div className="dz-pager">
-            <button type="button" className="btn btn-ghost btn-sm" disabled={page <= 0} onClick={() => setPage(page - 1)}>← Previous</button>
+            <button type="button" className="btn btn-ghost btn-sm" disabled={page <= 0} onClick={() => setPage(page - 1)}><Ico name="arrowLeft" size={15} /> Previous</button>
             <span>Page {page + 1} of {pages} · {fmt(lb.total)} members</span>
-            <button type="button" className="btn btn-ghost btn-sm" disabled={page >= pages - 1} onClick={() => setPage(page + 1)}>Next →</button>
+            <button type="button" className="btn btn-ghost btn-sm" disabled={page >= pages - 1} onClick={() => setPage(page + 1)}>Next <Ico name="arrowRight" size={15} /></button>
           </div>
         </>
       )}
@@ -293,7 +345,7 @@ export function MembersTab({ guildId, limits, initialId, toast }: { guildId: str
   }
 
   return (
-    <Panel title="Adjust a member’s XP">
+    <Panel title="Adjust a member’s XP" icon="wand" tone="rose">
       <form className="dz-lookup" onSubmit={(e) => { e.preventDefault(); void lookup() }}>
         <div className="dz-field">
           <label htmlFor="dz-uid">Member ID or @mention</label>
@@ -331,12 +383,12 @@ export function MembersTab({ guildId, limits, initialId, toast }: { guildId: str
   )
 }
 
-export function TabBar<T extends string>({ tabs, value, onChange }: { tabs: { id: T; label: string; icon: ReactNode; dirty?: boolean }[]; value: T; onChange: (t: T) => void }) {
+export function TabBar<T extends string>({ tabs, value, onChange }: { tabs: { id: T; label: string; icon: ReactNode; tone: Tone; dirty?: boolean }[]; value: T; onChange: (t: T) => void }) {
   return (
     <div className="dz-tabs" role="tablist" aria-label="Leveling sections">
       {tabs.map((t) => (
-        <button key={t.id} type="button" role="tab" id={`tab-${t.id}`} aria-selected={value === t.id} aria-controls={`panel-${t.id}`} className={value === t.id ? 'is-on' : ''} onClick={() => onChange(t.id)}>
-          <span aria-hidden="true">{t.icon}</span>{t.label}{t.dirty && <i className="dz-dirty" title="Unsaved changes" />}
+        <button key={t.id} type="button" role="tab" id={`tab-${t.id}`} aria-selected={value === t.id} aria-controls={`panel-${t.id}`} className={`tone-${t.tone} ${value === t.id ? 'is-on' : ''}`} onClick={() => onChange(t.id)}>
+          <span className="dz-tabs__ico" aria-hidden="true">{t.icon}</span>{t.label}{t.dirty && <i className="dz-dirty" title="Unsaved changes" />}
         </button>
       ))}
     </div>
