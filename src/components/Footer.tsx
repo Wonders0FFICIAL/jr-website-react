@@ -48,6 +48,9 @@ export function Footer() {
           <ul>
             <li><Link to="/privacy">Privacy</Link></li>
             <li><Link to="/terms">Terms</Link></li>
+            <li><Link to="/nook/dashboard">Nook dashboard</Link></li>
+            <li><Link to="/nook/privacy">Nook privacy</Link></li>
+            <li><Link to="/nook/terms">Nook terms</Link></li>
             <li>
               <a href={DONATE.href} target="_blank" rel="noopener noreferrer">
                 {DONATE.label}

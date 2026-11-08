@@ -43,5 +43,11 @@
       "destination": "/",
       "permanent": true
     }
+  ],
+  "rewrites": [
+    {
+      "source": "/nook/dashboard/:path+",
+      "destination": "/nook/dashboard/index.html"
+    }
   ]
 }

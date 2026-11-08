@@ -31,7 +31,7 @@ const SECTIONS: LegalSection[] = [
               <td data-label="What is handled">
                 Discord IDs (users, servers, channels, roles and messages) and usernames, as needed to run
                 commands and buttons. The bot reads message text to spot commands that start with a prefix such
-                as “!”. Messages that are not commands are not stored.
+                as “!”, and counts eligible messages to award leveling XP (see Leveling below). The text of messages that are not commands is never stored.
               </td>
             </tr>
             <tr>
@@ -57,6 +57,26 @@ const SECTIONS: LegalSection[] = [
               <td>Self-assign roles</td>
               <td data-label="What is handled">
                 No personal data is stored. The bot only adds or removes the roles you pick.
+              </td>
+            </tr>
+            <tr>
+              <td>Leveling</td>
+              <td data-label="What is handled">
+                If leveling is switched on in a server: for each member, the server ID, user ID, display name
+                (shown on leaderboards), total XP, level, a count of messages that earned XP, the time of the
+                last XP award, and weekly and monthly XP totals. The bot sees message text only to decide
+                whether a message qualifies and does not store it. Server staff choose the settings (XP
+                amounts, ignored channels and roles, level roles) and can adjust or reset a member’s XP.
+              </td>
+            </tr>
+            <tr>
+              <td>Website dashboard</td>
+              <td data-label="What is handled">
+                If you log in with Discord on this website: your Discord user ID, username, avatar and the list of
+                servers you manage (names, IDs and icons), kept in a login session for up to 7 days. Your Discord
+                login token is used once and discarded straight away. A random session token is kept in your
+                browser’s local storage, and only a hash of it is stored on our side. Changes you make there are
+                saved as that server’s bot settings.
               </td>
             </tr>
             <tr>
@@ -129,6 +149,11 @@ const SECTIONS: LegalSection[] = [
             Ticket records are kept until deleted on request. Transcript files live in the server’s logs channel
             and are controlled by that server’s staff.
           </li>
+          <li>Dashboard login sessions expire after 7 days or when you log out.</li>
+          <li>
+            Leveling data is kept while the bot is in the server, until staff reset it or you ask us to
+            delete it. Weekly and monthly totals are deleted automatically after about 100 days.
+          </li>
           <li>
             Media you upload is kept until you delete it. Deleting an item removes its file from our database
             straight away.
@@ -150,7 +175,7 @@ const SECTIONS: LegalSection[] = [
         <ul className="legal__cards">
           <li><strong>Show you</strong>what we hold about you, with a copy.</li>
           <li><strong>Correct it</strong>if anything is wrong.</li>
-          <li><strong>Delete it</strong>including warnings, ticket records and media.</li>
+          <li><strong>Delete it</strong>including warnings, ticket records, leveling progress and media.</li>
         </ul>
         <p>
           Use the <Link to="/contact">contact page</Link> or message us on Discord, and include your Discord user
@@ -211,13 +236,13 @@ export function NookPrivacy() {
     <LegalPage
       title="Nook privacy policy"
       lead="What the Nook Discord bot handles, why, and the control you have over it."
-      updated="5 November 2026"
+      updated="7 November 2026"
       readMinutes={4}
       summary={{
         heading: 'The short version',
         points: [
           'We only handle what the bot needs to work: Discord IDs, usernames and what you give it.',
-          'Warnings and ticket records are stored. Ticket transcripts go to your server’s logs channel, not our database.',
+          'Warnings, ticket records and leveling progress (XP counters, not message text) are stored. Ticket transcripts go to your server’s logs channel, not our database.',
           'We never sell your information, show ads or train AI on it.',
           'You can ask us to show, fix or delete your data at any time.',
         ],

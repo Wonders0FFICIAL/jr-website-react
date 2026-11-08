@@ -41,7 +41,7 @@ const SECTIONS: LegalSection[] = [
       <>
         <p>
           Nook provides moderation tools (warnings, mutes, kicks and bans), support tickets with transcripts,
-          self-assignable role panels, and a private and shared media library for approved users. We may add,
+          self-assignable role panels, server leveling (XP, ranks, leaderboards and role rewards), and a private and shared media library for approved users. We may add,
           change or remove features at any time.
         </p>
       </>
@@ -182,7 +182,7 @@ export function NookTerms() {
     <LegalPage
       title="Nook terms of service"
       lead="The rules for using the Nook Discord bot."
-      updated="5 November 2026"
+      updated="7 November 2026"
       readMinutes={3}
       summary={{
         heading: 'The short version',

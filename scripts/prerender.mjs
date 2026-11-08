@@ -40,9 +40,12 @@ function page(path, entry, { noindex = false } = {}) {
   return setTag(html, /<div id="root"><\/div>/, `<div id="root" data-path="${path}">${body}</div>`)
 }
 
+// The dashboard is a logged-in app: keep it out of search results and the sitemap.
+const isPrivate = (p) => p.startsWith('/nook/dashboard')
+
 const routes = Object.keys(SEO)
 for (const path of routes) {
-  const html = page(path, SEO[path])
+  const html = page(path, SEO[path], { noindex: isPrivate(path) })
   const file = path === '/' ? join(dist, 'index.html') : join(dist, path.slice(1), 'index.html')
   await mkdir(dirname(file), { recursive: true })
   await writeFile(file, html)
@@ -55,6 +58,7 @@ const today = new Date().toISOString().slice(0, 10)
 const sitemap =
   `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
   routes
+    .filter((p) => !isPrivate(p))
     .map((p) => `  <url><loc>${SITE_URL}${p === '/' ? '/' : p}</loc><lastmod>${today}</lastmod></url>`)
     .join('\n') +
   `\n</urlset>\n`

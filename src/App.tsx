@@ -11,6 +11,11 @@ import { Terms } from './pages/Terms'
 import { NookPrivacy } from './pages/NookPrivacy'
 import { NookTerms } from './pages/NookTerms'
 import { NotFound } from './pages/NotFound'
+import { DashboardRoot } from './dashboard/DashboardRoot'
+import { DashboardHome } from './dashboard/DashboardHome'
+import { DashboardCallback } from './dashboard/DashboardCallback'
+import { DashboardGuild } from './dashboard/DashboardGuild'
+import { DashboardLeveling } from './dashboard/DashboardLeveling'
 
 export default function App() {
   return (
@@ -26,6 +31,12 @@ export default function App() {
         <Route path="terms" element={<Terms />} />
         <Route path="nook/privacy" element={<NookPrivacy />} />
         <Route path="nook/terms" element={<NookTerms />} />
+        <Route path="nook/dashboard" element={<DashboardRoot />}>
+          <Route index element={<DashboardHome />} />
+          <Route path="callback" element={<DashboardCallback />} />
+          <Route path=":guildId" element={<DashboardGuild />} />
+          <Route path=":guildId/leveling" element={<DashboardLeveling />} />
+        </Route>
         <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>

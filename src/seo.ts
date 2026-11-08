@@ -48,6 +48,10 @@ export const SEO = {
     title: 'Nook terms of service',
     description: 'The rules for using the Nook Discord bot by JR.',
   },
+  '/nook/dashboard': {
+    title: 'Nook dashboard',
+    description: 'Log in with Discord to configure Nook leveling, announcements and role rewards for your server.',
+  },
 } satisfies Record<string, SeoEntry>
 
 export type SeoPath = keyof typeof SEO
