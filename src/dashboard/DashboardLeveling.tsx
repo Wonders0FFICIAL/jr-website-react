@@ -75,7 +75,7 @@ function Editor({ data, setSnapshot }: { data: GuildSnapshot; setSnapshot: (d: G
   const shared = { data, draft, set }
 
   return (
-    <div className="container dz-main">
+    <div>
       <GuildHeader data={data} current="Leveling" tone="pink" />
       <TabBar tabs={tabs} value={tab} onChange={setTab} />
       <div className="dz-content" role="tabpanel" id={`panel-${tab}`} aria-labelledby={`tab-${tab}`}>

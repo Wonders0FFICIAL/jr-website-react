@@ -4,6 +4,16 @@
   "outputDirectory": "dist",
   "redirects": [
     {
+      "source": "/nook",
+      "destination": "/nook/dashboard",
+      "permanent": false
+    },
+    {
+      "source": "/nook/",
+      "destination": "/nook/dashboard",
+      "permanent": false
+    },
+    {
       "source": "/home",
       "destination": "/",
       "permanent": true

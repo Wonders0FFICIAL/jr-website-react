@@ -1,4 +1,4 @@
-import { Route, Routes } from 'react-router-dom'
+import { Navigate, Route, Routes } from 'react-router-dom'
 import { Layout } from './components/Layout'
 import { Home } from './pages/Home'
 import { Products } from './pages/Products'
@@ -29,6 +29,7 @@ export default function App() {
         <Route path="contact" element={<Contact />} />
         <Route path="privacy" element={<Privacy />} />
         <Route path="terms" element={<Terms />} />
+        <Route path="nook" element={<Navigate to="/nook/dashboard" replace />} />
         <Route path="nook/privacy" element={<NookPrivacy />} />
         <Route path="nook/terms" element={<NookTerms />} />
         <Route path="nook/dashboard" element={<DashboardRoot />}>

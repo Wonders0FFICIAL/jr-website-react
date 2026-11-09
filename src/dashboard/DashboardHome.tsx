@@ -10,6 +10,7 @@ export function DashboardHome() {
   usePageMeta('/nook/dashboard')
   const { state, reload } = useSession()
   const [invite, setInvite] = useState<string | null>(null)
+  const [q, setQ] = useState('')
 
   useEffect(() => {
     if (state.status !== 'in') return
@@ -44,7 +45,7 @@ export function DashboardHome() {
     )
   }
 
-  const guilds = [...state.me.guilds].sort((a, b) => Number(b.botIn) - Number(a.botIn) || a.name.localeCompare(b.name))
+  const guilds = [...state.me.guilds].filter((g) => g.name.toLowerCase().includes(q.trim().toLowerCase())).sort((a, b) => Number(b.botIn) - Number(a.botIn) || a.name.localeCompare(b.name))
   return (
     <div className="container dz-main">
       <header className="dz-head">
@@ -54,7 +55,11 @@ export function DashboardHome() {
         </div>
         <button type="button" className="btn btn-ghost btn-sm dz-btn-ico" onClick={() => reload()}><Ico name="refresh" size={15} />Refresh</button>
       </header>
-      {!guilds.length && <Notice>No servers found. You need the Manage Server permission in a server to configure Nook there. If you just got it, <a className="text-link" href={api.loginUrl()}>log in again</a> to refresh your list.</Notice>}
+      {state.me.guilds.length > 5 && (
+        <div className="dz-searchbox dz-serversearch"><Ico name="search" size={16} /><input className="dz-search" type="search" placeholder="Search your servers…" value={q} onChange={(e) => setQ(e.target.value)} aria-label="Search servers" /></div>
+      )}
+      {!guilds.length && state.me.guilds.length > 0 && <Notice>No servers match “{q}”.</Notice>}
+      {!state.me.guilds.length && <Notice>No servers found. You need the Manage Server permission in a server to configure Nook there. If you just got it, <a className="text-link" href={api.loginUrl()}>log in again</a> to refresh your list.</Notice>}
       <ul className="dz-guilds">
         {guilds.map((g) => {
           const icon = guildIcon(g.id, g.icon)
