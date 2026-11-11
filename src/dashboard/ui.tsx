@@ -1,6 +1,6 @@
 import { useEffect, useId, useMemo, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
-import { Ico, Tile } from './Icons'
+import { Ico } from './Icons'
 import type { IconName, Tone } from './Icons'
 
 /* ---------- Toggle ---------- */
@@ -115,11 +115,12 @@ export const Spinner = ({ label = 'Loading' }: { label?: string }) => (
   <div className="dz-center" role="status"><span className="dz-spinner" aria-hidden="true" /><span className="sr-only">{label}</span></div>
 )
 
-export function Panel({ title, children, aside, icon, tone = 'violet' }: { title?: string; children: ReactNode; aside?: ReactNode; icon?: IconName; tone?: Tone }) {
+export function Panel({ title, children, aside, icon }: { title?: string; children: ReactNode; aside?: ReactNode; icon?: IconName; tone?: Tone }) {
+  const labelled = !!(title || aside)
   return (
-    <section className={`dz-panel tone-${tone}`}>
-      {(title || aside) && <header className="dz-panel__head">{title && <h2>{icon && <Tile name={icon} tone={tone} size={30} />}{title}</h2>}{aside}</header>}
-      {children}
+    <section className={`dz-panel ${labelled ? '' : 'dz-panel--bare'}`}>
+      {labelled && <header className="dz-panel__head">{title && <h2>{icon && <Ico name={icon} size={18} />}{title}</h2>}{aside}</header>}
+      <div className="dz-panel__body">{children}</div>
     </section>
   )
 }

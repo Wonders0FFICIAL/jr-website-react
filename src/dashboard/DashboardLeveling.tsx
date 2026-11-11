@@ -76,7 +76,7 @@ function Editor({ data, setSnapshot }: { data: GuildSnapshot; setSnapshot: (d: G
 
   return (
     <div>
-      <GuildHeader data={data} current="Leveling" tone="pink" />
+      <GuildHeader data={data} current="Leveling" />
       <TabBar tabs={tabs} value={tab} onChange={setTab} />
       <div className="dz-content" role="tabpanel" id={`panel-${tab}`} aria-labelledby={`tab-${tab}`}>
         {tab === 'general' && <GeneralTab {...shared} />}
@@ -89,7 +89,7 @@ function Editor({ data, setSnapshot }: { data: GuildSnapshot; setSnapshot: (d: G
 
       {editable && dirty && (
         <div className="dz-savebar" role="region" aria-label="Unsaved changes">
-          <div className="container dz-savebar__in">
+          <div className="dz-savebar__in">
             <span>{errs.length ? <Notice kind="err">{errs[0]}</Notice> : formError ? <Notice kind="err">{formError}</Notice> : 'You have unsaved changes.'}</span>
             <div>
               <button type="button" className="btn btn-ghost btn-sm" onClick={() => { setDraft(saved); setFormError(null) }} disabled={saving}>Discard</button>

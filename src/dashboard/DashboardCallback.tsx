@@ -33,7 +33,7 @@ export function DashboardCallback() {
   }, [navigate])
 
   return (
-    <div className="container dz-main">
+    <div className="dz-page dz-page--narrow">
       {error ? (
         <section className="dz-hero">
           <h1>Login didn’t work</h1>
