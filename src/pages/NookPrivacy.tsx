@@ -80,6 +80,15 @@ const SECTIONS: LegalSection[] = [
               </td>
             </tr>
             <tr>
+              <td>Public leaderboard</td>
+              <td data-label="What is handled">
+                Only if a server admin switches it on in the dashboard (off by default). Anyone with the link
+                can then see, for the top 1,000 ranked members: display name, avatar, level, XP and rank title.
+                User IDs are not shown. Admins can switch it off at any time and the page stops working
+                straight away.
+              </td>
+            </tr>
+            <tr>
               <td>Media library</td>
               <td data-label="What is handled">
                 For approved users only: the images, GIFs and stickers you upload, the names you give them, file
@@ -236,7 +245,7 @@ export function NookPrivacy() {
     <LegalPage
       title="Nook privacy policy"
       lead="What the Nook Discord bot handles, why, and the control you have over it."
-      updated="7 November 2026"
+      updated="11 November 2026"
       readMinutes={4}
       summary={{
         heading: 'The short version',

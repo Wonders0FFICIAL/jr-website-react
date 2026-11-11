@@ -13,6 +13,7 @@ export type LevelingConfig = {
   rewards: Reward[]
   ignoredChannels: string[]
   ignoredRoles: string[]
+  leaderboard: { public: boolean; slug: string | null }
 }
 
 export type ChannelInfo = { id: string; name: string; kind: 'text' | 'voice' | 'forum'; canSend: boolean }
@@ -20,6 +21,8 @@ export type RoleInfo = { id: string; name: string; color: string | null; problem
 export type LadderTier = { level: number; role: string; color: string; perk: string }
 export type Ladder = { titles: string[]; tiers: LadderTier[] }
 export type LadderResult = { created: string[]; matched: string[]; skipped: { name: string; reason: string }[]; added: number; leveling: LevelingConfig }
+export type PublicRow = { rank: number; name: string; avatar: string | null; xp: number; level: number; title: string }
+export type PublicLeaderboardData = { guild: { name: string; icon: string | null; memberCount: number }; period: Period; page: number; pageSize: number; total: number; pages: number; rows: PublicRow[]; updatedAt: string }
 export type Preset = { id: string; label: string; a: number; b: number; c: number }
 export type Limits = {
   MAX_LEVEL: number

@@ -265,6 +265,49 @@ export function RewardsTab({ data, draft, set, savedRoleIds, dirty, onApplied, t
   )
 }
 
+/* =========================== Public page =========================== */
+export const SLUG_RE = /^[a-z0-9](?:[a-z0-9-]{1,30})[a-z0-9]$/
+export const slugError = (slug: string | null): string | null =>
+  slug && (!SLUG_RE.test(slug) || !/[a-z]/.test(slug)) ? 'Link names use 3 to 32 letters, numbers or dashes, with at least one letter, and can’t start or end with a dash.' : null
+
+export function PublicPagePanel({ data, draft, set }: DraftProps) {
+  const lb = draft.leaderboard
+  const saved = data.leveling.leaderboard
+  const [copied, setCopied] = useState(false)
+  const origin = typeof window !== 'undefined' ? window.location.origin : 'https://jrofficial.org'
+  const key = lb.slug || data.guild.id
+  const url = `${origin}/nook/leaderboard/${key}`
+  const live = saved.public && (saved.slug || data.guild.id) === key
+  const err = slugError(lb.slug)
+  const copy = async () => {
+    try { await navigator.clipboard.writeText(url); setCopied(true); setTimeout(() => setCopied(false), 1800) } catch { /* clipboard blocked: the link is shown to copy by hand */ }
+  }
+  return (
+    <Panel title="Public page" icon="users" tone="cyan">
+      <Toggle checked={lb.public} onChange={(v) => set({ leaderboard: { ...lb, public: v } })} label="Share a public leaderboard" hint="Anyone with the link can see members’ display names, avatars, levels and XP. It’s off until you turn it on." />
+      {lb.public && (
+        <>
+          <div className="dz-field">
+            <label htmlFor="lb-slug">Link name</label>
+            <div className={`dz-input dz-input--prefix ${err ? 'is-invalid' : ''}`}>
+              <span className="dz-input__prefix">{origin.replace(/^https?:\/\//, '')}/nook/leaderboard/</span>
+              <input id="lb-slug" type="text" value={lb.slug ?? ''} maxLength={32} spellCheck={false} autoCapitalize="none" placeholder="optional, e.g. jr"
+                onChange={(e) => set({ leaderboard: { ...lb, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '') || null } })} aria-invalid={!!err || undefined} />
+            </div>
+            {err ? <p className="dz-err">{err}</p> : <p className="dz-hint">Leave it empty to use your server ID. Pick a short name to get a link you can share.</p>}
+          </div>
+          <div className="dz-linkrow">
+            <code>{url}</code>
+            <button type="button" className="btn btn-ghost btn-sm dz-btn-ico" onClick={copy}><Ico name={copied ? 'check' : 'copy'} size={15} />{copied ? 'Copied' : 'Copy'}</button>
+            <a className={`btn btn-ghost btn-sm dz-btn-ico ${live ? '' : 'is-disabled'}`} href={live ? url : undefined} target="_blank" rel="noopener noreferrer" aria-disabled={!live}><Ico name="external" size={15} />Open</a>
+          </div>
+          {!live && <Notice>Save your changes and this link goes live.</Notice>}
+        </>
+      )}
+    </Panel>
+  )
+}
+
 /* =========================== Leaderboard =========================== */
 export function LeaderboardTab({ guildId, onAdjust }: { guildId: string; onAdjust: (userId: string) => void }) {
   const [period, setPeriod] = useState<Period>('alltime')

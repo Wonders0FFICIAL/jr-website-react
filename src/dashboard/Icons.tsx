@@ -33,6 +33,7 @@ const PATHS = {
   x: <path d="M6 6l12 12M18 6L6 18" />,
   bars: <path d="M5 20V11M12 20V4M19 20v-6" />,
   wand: <path d="M5 19L16 8M14 6l2-2 4 4-2 2zM6 4v3M4.5 5.5h3M19 15v3M17.5 16.5h3" />,
+  copy: <><rect x="9" y="9" width="11" height="11" rx="2.5" /><path d="M5 15V6.5A1.5 1.5 0 0 1 6.5 5H15" /></>,
   gift: <><rect x="4" y="9" width="16" height="11" rx="2" /><path d="M3 9h18v3H3zM12 9v11M12 9c-3.5 0-4.5-5 0-5 2 0 3 2 0 5zM12 9c3.5 0 4.5-5 0-5-2 0-3 2 0 5z" /></>,
 } satisfies Record<string, ReactNode>
 

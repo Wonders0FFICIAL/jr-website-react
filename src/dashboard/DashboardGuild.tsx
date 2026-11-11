@@ -2,6 +2,7 @@ import { Link, useParams } from 'react-router-dom'
 import { api } from './api'
 import { useGuild } from './useGuild'
 import { Ico } from './Icons'
+import type { IconName, Tone } from './Icons'
 import { Notice, Spinner } from './ui'
 import { fmt } from './levelMath'
 import { usePageMeta } from '../hooks/usePageMeta'
@@ -38,10 +39,11 @@ export function GuildGate({ children }: { children: (data: GuildSnapshot, h: Ret
   return <div className="dz-page">{children(guild.data, h)}</div>
 }
 
-export function PageHead({ title, sub, action }: { title: string; sub?: string; action?: React.ReactNode }) {
+export function PageHead({ title, sub, action, icon, tone = 'violet' }: { title: string; sub?: string; action?: React.ReactNode; icon?: IconName; tone?: Tone }) {
   return (
     <header className="dz-pagehead">
-      <div>
+      {icon && <span className={`dz-headtile tone-${tone}`} aria-hidden="true"><Ico name={icon} size={24} /></span>}
+      <div className="dz-pagehead__text">
         <h1>{title}</h1>
         {sub && <p>{sub}</p>}
       </div>
@@ -52,7 +54,7 @@ export function PageHead({ title, sub, action }: { title: string; sub?: string; 
 
 export function GuildHeader({ data, current }: { data: GuildSnapshot; current: string }) {
   const sub = current === 'Leveling' ? `XP, ranks and role rewards in ${data.guild.name}.` : `${data.guild.name} · ${fmt(data.guild.memberCount)} members`
-  return <PageHead title={current} sub={sub} />
+  return <PageHead title={current} sub={sub} icon={current === 'Leveling' ? 'star' : 'layers'} tone={current === 'Leveling' ? 'pink' : 'violet'} />
 }
 
 function Setup({ data }: { data: GuildSnapshot }) {
@@ -90,22 +92,22 @@ export function DashboardGuild() {
           <>
             <GuildHeader data={data} current="Overview" />
             <dl className="dz-figures">
-              <div><dt>XP per message</dt><dd>{l.xpMin}–{l.xpMax}</dd></div>
-              <div><dt>Role rewards</dt><dd>{l.rewards.length}</dd></div>
-              <div><dt>Ranked members</dt><dd>{fmt(data.ranked)}</dd></div>
+              <div className="tone-amber"><dt>XP per message</dt><dd>{l.xpMin}–{l.xpMax}</dd></div>
+              <div className="tone-pink"><dt>Role rewards</dt><dd>{l.rewards.length}</dd></div>
+              <div className="tone-cyan"><dt>Ranked members</dt><dd>{fmt(data.ranked)}</dd></div>
             </dl>
             <section className="dz-section">
               <div className="dz-section__head"><h2>Modules</h2></div>
               <ul className="dz-modrows">
                 <li>
-                  <span className="dz-arch dz-arch--lamp" aria-hidden="true"><Ico name="star" size={20} /></span>
+                  <span className="dz-arch tone-pink" aria-hidden="true"><Ico name="star" size={20} /></span>
                   <div><h3>Leveling</h3><p>XP, ranks, leaderboards and role rewards.</p></div>
                   <span className={`dz-badge ${l.enabled ? 'is-on' : ''}`}>{l.enabled ? 'On' : 'Off'}</span>
                   <Link className="btn btn-primary btn-sm dz-btn-ico" to={`/nook/dashboard/${data.guild.id}/leveling`}>Open<Ico name="arrowRight" size={16} /></Link>
                 </li>
                 {([['Welcome and roles', 'door', 'Greet new members and give them roles.'], ['Logging', 'clock', 'See joins, edits and deletes in one place.'], ['Auto-moderation', 'shield', 'Filter spam, links and bad words.']] as const).map(([n, ic, d]) => (
                   <li key={n} className="is-soon">
-                    <span className="dz-arch" aria-hidden="true"><Ico name={ic} size={20} /></span>
+                    <span className="dz-arch dz-arch--dim" aria-hidden="true"><Ico name={ic} size={20} /></span>
                     <div><h3>{n}</h3><p>{d}</p></div>
                     <span className="dz-badge">Soon</span>
                   </li>

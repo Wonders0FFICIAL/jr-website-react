@@ -16,6 +16,7 @@ import { DashboardHome } from './dashboard/DashboardHome'
 import { DashboardCallback } from './dashboard/DashboardCallback'
 import { DashboardGuild } from './dashboard/DashboardGuild'
 import { DashboardLeveling } from './dashboard/DashboardLeveling'
+import { PublicLeaderboard } from './dashboard/PublicLeaderboard'
 
 export default function App() {
   return (
@@ -32,6 +33,7 @@ export default function App() {
         <Route path="nook" element={<Navigate to="/nook/dashboard" replace />} />
         <Route path="nook/privacy" element={<NookPrivacy />} />
         <Route path="nook/terms" element={<NookTerms />} />
+        <Route path="nook/leaderboard/:slug" element={<PublicLeaderboard />} />
         <Route path="nook/dashboard" element={<DashboardRoot />}>
           <Route index element={<DashboardHome />} />
           <Route path="callback" element={<DashboardCallback />} />

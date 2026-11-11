@@ -41,7 +41,7 @@ function page(path, entry, { noindex = false } = {}) {
 }
 
 // The dashboard is a logged-in app: keep it out of search results and the sitemap.
-const isPrivate = (p) => p.startsWith('/nook/dashboard')
+const isPrivate = (p) => p.startsWith('/nook/dashboard') || p.startsWith('/nook/leaderboard')
 
 const routes = Object.keys(SEO)
 for (const path of routes) {

@@ -115,10 +115,10 @@ export const Spinner = ({ label = 'Loading' }: { label?: string }) => (
   <div className="dz-center" role="status"><span className="dz-spinner" aria-hidden="true" /><span className="sr-only">{label}</span></div>
 )
 
-export function Panel({ title, children, aside, icon }: { title?: string; children: ReactNode; aside?: ReactNode; icon?: IconName; tone?: Tone }) {
+export function Panel({ title, children, aside, icon, tone = 'violet' }: { title?: string; children: ReactNode; aside?: ReactNode; icon?: IconName; tone?: Tone }) {
   const labelled = !!(title || aside)
   return (
-    <section className={`dz-panel ${labelled ? '' : 'dz-panel--bare'}`}>
+    <section className={`dz-panel tone-${tone} ${labelled ? '' : 'dz-panel--bare'}`}>
       {labelled && <header className="dz-panel__head">{title && <h2>{icon && <Ico name={icon} size={18} />}{title}</h2>}{aside}</header>}
       <div className="dz-panel__body">{children}</div>
     </section>

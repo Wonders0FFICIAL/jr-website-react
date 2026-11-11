@@ -5,6 +5,7 @@ import { Ico } from './Icons'
 import { useSession } from './session'
 import { Notice, Spinner } from './ui'
 import { PageHead } from './DashboardGuild'
+import { tintFor } from './tones'
 import { usePageMeta } from '../hooks/usePageMeta'
 
 export function DashboardHome() {
@@ -61,7 +62,7 @@ export function DashboardHome() {
           const icon = guildIcon(g.id, g.icon)
           return (
             <li key={g.id}>
-              {icon ? <img className="dz-arch dz-arch--img" src={icon} alt="" width="44" height="44" /> : <span className="dz-arch" aria-hidden="true">{g.name.slice(0, 1).toUpperCase()}</span>}
+              {icon ? <img className="dz-arch dz-arch--img" src={icon} alt="" width="44" height="44" /> : <span className={`dz-arch ${tintFor(g.id)}`} aria-hidden="true">{g.name.slice(0, 1).toUpperCase()}</span>}
               <div className="dz-serverlist__body">
                 <h2>{g.name}</h2>
                 <p>{g.owner ? 'Owner' : 'Manager'}{g.botIn ? '' : ' · Nook not added'}</p>

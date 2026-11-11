@@ -6,7 +6,9 @@
   --text: #f3ece1; --muted: #aaa2ba; --dim: #7b728b;
   --lamp: #ffc46b; --lamp-ink: #1d1224; --nook: #ffc46b;
   --brand: #ffc46b; --brand-soft: #ffc46b; --brand-line: rgb(255 196 107 / 0.4); --brand-line-strong: rgb(255 196 107 / 0.6);
+  --dusk: #a99bff; --rose: #ff7aa2; --coral: #ff9b6a; --teal: #5fd6c6; --sky: #7cc0ff; --sage: #a5dc7f;
   --ok: #6ee7a0; --warn: #ffc46b; --bad: #ff8a8a;
+  --tc: var(--lamp); --tg: 255 196 107;
   --serif: 'Fraunces Variable', Georgia, 'Times New Roman', serif;
   --rail-w: 252px;
   min-height: 100vh; background: var(--bg); color: var(--text); font-family: var(--font-body);
@@ -39,8 +41,8 @@
 .btn.is-disabled { opacity: 0.5; pointer-events: none; }
 
 /* ---------- the arch (from the Nook mark) ---------- */
-.dz-arch { display: inline-grid; flex: none; place-items: center; width: 44px; height: 44px; border-radius: 22px 22px 8px 8px; background: var(--surface-2); color: var(--muted); font: 600 1.1rem var(--serif); object-fit: cover; }
-.dz-arch--lamp { background: var(--lamp); color: var(--lamp-ink); }
+.dz-arch { display: inline-grid; flex: none; place-items: center; width: 44px; height: 44px; border-radius: 12px; background: rgb(var(--tg) / 0.18); color: var(--tc); font: 600 1.1rem var(--serif); object-fit: cover; }
+.dz-arch--dim { background: var(--surface-2); color: var(--dim); }
 .dz-brand { display: inline-flex; align-items: center; gap: 10px; color: var(--text); font: 600 1.3rem var(--serif); text-decoration: none; }
 .dz-brand__mark { position: relative; width: 22px; height: 26px; border-radius: 11px 11px 3px 3px; background: var(--lamp); }
 .dz-brand__mark::after { content: ''; position: absolute; inset: 6px 5px 0; border-radius: 6px 6px 1px 1px; background: var(--bg); }
@@ -51,8 +53,8 @@
 .dz-rail .dz-brand { padding: 0 8px; }
 .dz-switch-server { display: flex; align-items: center; gap: 10px; padding: 8px; border: 1px solid var(--line); border-radius: 12px; color: var(--text); text-decoration: none; }
 .dz-switch-server:hover { border-color: var(--line-2); background: var(--surface); }
-.dz-switch-server img { width: 36px; height: 36px; border-radius: 18px 18px 7px 7px; object-fit: cover; }
-.dz-switch-server .dz-arch { width: 36px; height: 36px; border-radius: 18px 18px 7px 7px; font-size: 1rem; }
+.dz-switch-server img { width: 36px; height: 36px; border-radius: 10px; object-fit: cover; }
+.dz-switch-server .dz-arch { width: 36px; height: 36px; border-radius: 10px; font-size: 1rem; }
 .dz-switch-server__name { flex: 1; min-width: 0; overflow: hidden; font-weight: 700; white-space: nowrap; text-overflow: ellipsis; }
 .dz-switch-server > svg { color: var(--dim); flex: none; }
 .dz-nav { display: grid; gap: 2px; align-content: start; flex: 1; }
@@ -105,7 +107,7 @@
 /* ---------- server list ---------- */
 .dz-serverlist { display: grid; border-top: 1px solid var(--line); list-style: none; }
 .dz-serverlist li { display: flex; align-items: center; gap: 14px; padding: 14px 4px; border-bottom: 1px solid var(--line); }
-.dz-arch--img { border-radius: 22px 22px 8px 8px; }
+.dz-arch--img { border-radius: 12px; }
 .dz-serverlist__body { flex: 1; min-width: 0; }
 .dz-serverlist h2 { overflow: hidden; font: 700 1.02rem var(--font-body); white-space: nowrap; text-overflow: ellipsis; }
 .dz-serverlist p { color: var(--dim); font-size: 0.88rem; }
@@ -285,3 +287,44 @@
 @media (max-width: 640px) { .dz-savebar__in { flex-direction: column; align-items: stretch; padding: 0 16px; } .dz-savebar__in > div { justify-content: flex-end; } }
 .dz-panel__head .dz-seg { flex-wrap: nowrap; }
 .dz-panel__head .dz-seg button { padding: 7px 10px; }
+
+/* ---------- colour system ----------
+   Amber stays the brand and every primary action. Each area also has its own colour,
+   used for its icon, tab underline, headline tile and numbers. */
+.tone-violet { --tc: var(--dusk);  --tg: 169 155 255; }
+.tone-pink   { --tc: var(--rose);  --tg: 255 122 162; }
+.tone-rose   { --tc: var(--coral); --tg: 255 155 106; }
+.tone-amber  { --tc: var(--lamp);  --tg: 255 196 107; }
+.tone-cyan   { --tc: var(--teal);  --tg: 95 214 198; }
+.tone-green  { --tc: var(--sage);  --tg: 165 220 127; }
+
+.dz-headtile { display: grid; flex: none; place-items: center; width: 52px; height: 52px; border-radius: 14px; background: rgb(var(--tg) / 0.16); color: var(--tc); }
+.dz-pagehead { justify-content: flex-start; align-items: center; gap: 16px; }
+.dz-pagehead__text { flex: 1; min-width: 0; }
+.dz-nav__link.is-on { background: rgb(var(--tg) / 0.14); }
+.dz-nav__link:not(.is-soon) svg { color: var(--tc); opacity: 0.75; }
+.dz-nav__link.is-on svg { opacity: 1; }
+.dz-tabs button.is-on::after { background: var(--tc); }
+.dz-tabs__ico { color: var(--tc); opacity: 0.6; }
+.dz-tabs button.is-on .dz-tabs__ico, .dz-tabs button:hover .dz-tabs__ico { opacity: 1; color: var(--tc); }
+.dz-panel__head h2 svg { box-sizing: content-box; padding: 6px; border-radius: 9px; background: rgb(var(--tg) / 0.15); color: var(--tc); }
+.dz-figures { gap: 12px; border: 0; margin-top: 4px; }
+.dz-figures div, .dz-figures div + div { padding: 16px 18px; border: 1px solid rgb(var(--tg) / 0.28); border-radius: 14px; background: rgb(var(--tg) / 0.07); }
+.dz-figures dd { color: var(--tc); }
+.dz-section h2 { display: flex; align-items: center; gap: 10px; }
+.dz-badge.is-on { background: rgb(110 231 160 / 0.1); }
+.dz-curve__line { stroke: var(--tc); }
+.dz-curve__fill { fill: rgb(var(--tg) / 0.12); }
+.dz-table--lb td:first-child { color: var(--tc); }
+.dz-presets button.is-on { border-color: var(--tc); background: rgb(var(--tg) / 0.1); }
+.dz-tokens button { color: var(--tc); border-color: rgb(var(--tg) / 0.35); }
+.dz-notice > svg { color: var(--tc); }
+.dz-notice.is-warn > svg { color: var(--warn); }
+.dz-notice.is-err > svg { color: var(--bad); }
+
+/* ---------- link row + prefixed input ---------- */
+.dz-input--prefix { overflow: hidden; }
+.dz-input__prefix { flex: none; padding: 0 0 0 12px; color: var(--dim); font-size: 0.9rem; white-space: nowrap; }
+.dz-input--prefix input { padding-left: 2px; }
+.dz-linkrow { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.dz-linkrow code { flex: 1 1 260px; min-width: 0; padding: 9px 12px; overflow: hidden; border-radius: 9px; background: var(--bg-2); color: var(--tc); white-space: nowrap; text-overflow: ellipsis; }

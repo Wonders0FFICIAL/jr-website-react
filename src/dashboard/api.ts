@@ -1,4 +1,4 @@
-import type { GuildSnapshot, Leaderboard, LadderResult, LevelingConfig, MemberInfo, Me, Period, XpResult } from './types'
+import type { PublicLeaderboardData, GuildSnapshot, Leaderboard, LadderResult, LevelingConfig, MemberInfo, Me, Period, XpResult } from './types'
 
 /** Public URL of the bot's dashboard API (set VITE_NOOK_API_URL in Vercel). No trailing slash. */
 export const API_URL: string = ((import.meta.env.VITE_NOOK_API_URL as string | undefined) ?? '').replace(/\/+$/, '')
@@ -55,6 +55,9 @@ async function request<T>(method: string, path: string, body?: unknown): Promise
   return data as T
 }
 
+/** Older bot versions don't send the public-leaderboard setting yet. */
+const withLb = (l: LevelingConfig): LevelingConfig => ({ ...l, leaderboard: l.leaderboard ?? { public: false, slug: null } })
+
 const g = (id: string) => `/api/guilds/${encodeURIComponent(id)}`
 
 export const api = {
@@ -62,13 +65,18 @@ export const api = {
   config: () => request<{ clientId: string; inviteUrl: string }>('GET', '/api/config'),
   me: () => request<Me>('GET', '/api/me'),
   logout: () => request<{ ok: true }>('POST', '/auth/logout', {}),
-  guild: (id: string) => request<GuildSnapshot>('GET', g(id)),
+  guild: async (id: string) => {
+    const snap = await request<GuildSnapshot>('GET', g(id))
+    return { ...snap, leveling: withLb(snap.leveling) }
+  },
   saveLeveling: (id: string, changes: Partial<LevelingConfig>) =>
-    request<{ leveling: LevelingConfig }>('PUT', `${g(id)}/leveling`, changes),
+    request<{ leveling: LevelingConfig }>('PUT', `${g(id)}/leveling`, changes).then((r) => ({ leveling: withLb(r.leveling) })),
   leaderboard: (id: string, period: Period, page: number) =>
     request<Leaderboard>('GET', `${g(id)}/leveling/leaderboard?period=${period}&page=${page}`),
   member: (id: string, userId: string) => request<MemberInfo>('GET', `${g(id)}/leveling/members/${encodeURIComponent(userId)}`),
   applyLadder: (id: string) => request<LadderResult>('POST', `${g(id)}/leveling/ladder`, {}),
+  publicLeaderboard: (key: string, period: Period, page: number) =>
+    request<PublicLeaderboardData>('GET', `/api/public/leaderboard/${encodeURIComponent(key)}?period=${period}&page=${page}`),
   adjustXp: (id: string, body: { userId: string; mode: 'add' | 'remove' | 'set' | 'reset'; amount?: number }) =>
     request<XpResult>('POST', `${g(id)}/leveling/xp`, body),
 }

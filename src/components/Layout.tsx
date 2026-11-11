@@ -24,7 +24,7 @@ function ScrollManager() {
 export function Layout() {
   const { pathname } = useLocation()
   // The Nook dashboard is an app of its own: no marketing header or footer.
-  if (pathname.startsWith('/nook/dashboard')) {
+  if (pathname.startsWith('/nook/dashboard') || pathname.startsWith('/nook/leaderboard')) {
     return (
       <>
         <ScrollManager />

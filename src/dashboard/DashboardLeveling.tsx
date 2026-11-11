@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { ApiError, api } from './api'
 import { GuildGate, GuildHeader } from './DashboardGuild'
-import { AnnounceTab, GeneralTab, IgnoredTab, LeaderboardTab, MembersTab, RewardsTab, TabBar } from './LevelingTabs'
+import { AnnounceTab, GeneralTab, IgnoredTab, LeaderboardTab, MembersTab, PublicPagePanel, RewardsTab, TabBar, slugError } from './LevelingTabs'
 import { Ico } from './Icons'
 import { Notice, Toasts, useToasts } from './ui'
 import { usePageMeta } from '../hooks/usePageMeta'
@@ -21,6 +21,8 @@ function problems(d: LevelingConfig, data: GuildSnapshot): string[] {
   if (!int(d.cooldownSec) || d.cooldownSec < 0 || d.cooldownSec > L.MAX_COOLDOWN_SEC) out.push(`Cooldown must be 0–${L.MAX_COOLDOWN_SEC} whole seconds.`)
   const { a, b, c } = d.progression
   if (![a, b].every((v) => v >= 0 && v <= L.MAX_COEFFICIENT) || c < 1 || c > L.MAX_COEFFICIENT) out.push(`Progression: a and b must be 0–${L.MAX_COEFFICIENT} and c at least 1.`)
+  const slugProblem = slugError(d.leaderboard.slug)
+  if (slugProblem) out.push(slugProblem)
   if (!d.announce.message.trim()) out.push('The announcement message can’t be empty.')
   const ids = new Set<string>()
   for (const r of d.rewards) {
@@ -52,7 +54,7 @@ function Editor({ data, setSnapshot }: { data: GuildSnapshot; setSnapshot: (d: G
     { id: 'announce' as const, label: 'Announcements', tone: 'pink' as const, icon: <Ico name="megaphone" size={18} />, dirty: dirtyIn(['announce']) },
     { id: 'ignored' as const, label: 'Ignored', tone: 'rose' as const, icon: <Ico name="ban" size={18} />, dirty: dirtyIn(['ignoredChannels', 'ignoredRoles']) },
     { id: 'rewards' as const, label: 'Rewards', tone: 'amber' as const, icon: <Ico name="award" size={18} />, dirty: dirtyIn(['rewards', 'rewardMode']) },
-    { id: 'leaderboard' as const, label: 'Leaderboard', tone: 'cyan' as const, icon: <Ico name="trophy" size={18} /> },
+    { id: 'leaderboard' as const, label: 'Leaderboard', tone: 'cyan' as const, icon: <Ico name="trophy" size={18} />, dirty: dirtyIn(['leaderboard']) },
     { id: 'members' as const, label: 'Members', tone: 'green' as const, icon: <Ico name="users" size={18} /> },
   ]
 
@@ -71,7 +73,7 @@ function Editor({ data, setSnapshot }: { data: GuildSnapshot; setSnapshot: (d: G
     } finally { setSaving(false) }
   }
 
-  const editable = tab === 'general' || tab === 'announce' || tab === 'ignored' || tab === 'rewards'
+  const editable = tab === 'general' || tab === 'announce' || tab === 'ignored' || tab === 'rewards' || tab === 'leaderboard'
   const shared = { data, draft, set }
 
   return (
@@ -83,7 +85,7 @@ function Editor({ data, setSnapshot }: { data: GuildSnapshot; setSnapshot: (d: G
         {tab === 'announce' && <AnnounceTab {...shared} />}
         {tab === 'ignored' && <IgnoredTab {...shared} />}
         {tab === 'rewards' && <RewardsTab {...shared} savedRoleIds={savedRoleIds} dirty={dirty} toast={toast} onApplied={(s) => { setSnapshot(s); setDraft(s.leveling) }} />}
-        {tab === 'leaderboard' && <LeaderboardTab guildId={data.guild.id} onAdjust={(id) => { setAdjustId(id); setTab('members') }} />}
+        {tab === 'leaderboard' && <><PublicPagePanel {...shared} /><LeaderboardTab guildId={data.guild.id} onAdjust={(id) => { setAdjustId(id); setTab('members') }} /></>}
         {tab === 'members' && <MembersTab guildId={data.guild.id} limits={data.limits} initialId={adjustId} toast={toast} />}
       </div>
 

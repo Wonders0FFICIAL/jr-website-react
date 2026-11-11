@@ -48,6 +48,10 @@ export const SEO = {
     title: 'Nook terms of service',
     description: 'The rules for using the Nook Discord bot by JR.',
   },
+  '/nook/leaderboard': {
+    title: 'Nook leaderboard',
+    description: 'A server’s public Nook leaderboard: top members by XP and level.',
+  },
   '/nook/dashboard': {
     title: 'Nook dashboard',
     description: 'Log in with Discord to configure Nook leveling, announcements and role rewards for your server.',

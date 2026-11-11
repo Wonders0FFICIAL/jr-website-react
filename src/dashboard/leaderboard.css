@@ -1,0 +1,53 @@
+/* Public leaderboard page */
+.lb { --gold: #ffc46b; --silver: #cfd3e6; --bronze: #e5986b; }
+.lb .dz-top { display: flex; align-items: center; justify-content: space-between; max-width: 960px; margin: 0 auto; padding: 18px 20px; }
+.lb-wrap { max-width: 960px; margin: 0 auto; padding: 24px 20px 96px; }
+.lb-head { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 20px; margin-bottom: 32px; }
+.lb-head > div { flex: 1; min-width: 200px; }
+.lb-head h1 { font-size: clamp(1.7rem, 4vw, 2.6rem); line-height: 1.1; }
+.lb-head p { margin-top: 4px; color: var(--muted); }
+.lb-guild { width: 72px; height: 72px; flex: none; border-radius: 50%; object-fit: cover; }
+.lb-guild--ph { display: grid; place-items: center; background: rgb(169 155 255 / 0.2); color: var(--dusk); font: 600 1.8rem var(--serif); }
+.lb-body { transition: opacity 0.15s; }
+.lb-body.is-loading { opacity: 0.55; }
+.lb-empty { padding: 48px 0; color: var(--muted); text-align: center; }
+.lb-avatar { flex: none; border-radius: 50%; object-fit: cover; background: var(--surface-2); }
+.lb-avatar--ph { display: grid; place-items: center; color: var(--muted); font-weight: 700; }
+
+/* podium: 2nd, 1st, 3rd */
+.lb-podium { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: end; gap: 12px; margin-bottom: 28px; padding: 0; list-style: none; }
+.lb-pod { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 18px 12px 20px; border: 1px solid var(--line); border-top: 3px solid var(--c); border-radius: 14px; background: var(--surface); text-align: center; }
+.lb-pod--1 { --c: var(--gold); padding-block: 28px 26px; background: rgb(255 196 107 / 0.07); }
+.lb-pod--2 { --c: var(--silver); }
+.lb-pod--3 { --c: var(--bronze); }
+.lb-pod__rank { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--c); color: var(--lamp-ink); font-weight: 700; font-size: 0.9rem; }
+.lb-pod .lb-avatar { box-shadow: 0 0 0 3px var(--c); }
+.lb-pod__name { max-width: 100%; overflow: hidden; font: 600 1.1rem var(--serif); white-space: nowrap; text-overflow: ellipsis; }
+.lb-pod__title { padding: 1px 10px; border-radius: 999px; background: rgb(255 255 255 / 0.06); color: var(--muted); font-size: 0.8rem; }
+.lb-pod__xp { color: var(--muted); font-size: 0.88rem; font-variant-numeric: tabular-nums; }
+.lb-pod__xp b { color: var(--c); }
+@media (max-width: 640px) {
+  .lb-podium { grid-template-columns: minmax(0, 1fr); }
+  .lb-pod--1 { order: -1; }
+  .lb-pod, .lb-pod--1 { display: grid; grid-template-columns: 28px 56px minmax(0, 1fr); grid-template-areas: 'rank av name' 'rank av title' 'rank av xp'; align-items: center; justify-items: start; column-gap: 12px; row-gap: 2px; padding: 14px; text-align: left; }
+  .lb-pod__rank { grid-area: rank; }
+  .lb-pod .lb-avatar { grid-area: av; width: 56px !important; height: 56px !important; }
+  .lb-pod__name { grid-area: name; max-width: 100%; }
+  .lb-pod__title { grid-area: title; }
+  .lb-pod__xp { grid-area: xp; }
+}
+
+/* list */
+.lb-list { border-top: 1px solid var(--line); padding: 0; list-style: none; }
+.lb-list li { display: grid; grid-template-columns: 40px 40px minmax(0, 1fr) auto auto; align-items: center; gap: 14px; padding: 12px 6px; border-bottom: 1px solid var(--line); }
+.lb-list__rank { color: var(--dim); font-weight: 700; font-variant-numeric: tabular-nums; text-align: center; }
+.lb-list__who { display: grid; min-width: 0; }
+.lb-list__who strong { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.lb-list__who small { color: var(--dim); }
+.lb-list__lvl { padding: 2px 10px; border-radius: 999px; background: rgb(95 214 198 / 0.14); color: var(--teal); font-size: 0.85rem; font-weight: 700; white-space: nowrap; }
+.lb-list__xp { min-width: 90px; color: var(--muted); font-variant-numeric: tabular-nums; text-align: right; }
+@media (max-width: 560px) { .lb-list li { grid-template-columns: 32px 36px minmax(0, 1fr) auto; gap: 10px; } .lb-list__lvl { display: none; } }
+.lb-pager { margin-top: 20px; }
+.lb-foot { margin-top: 36px; color: var(--dim); font-size: 0.88rem; }
+.lb-missing { padding: 64px 0; }
+.lb-missing p { margin: 10px 0 18px; color: var(--muted); }
